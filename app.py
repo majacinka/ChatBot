@@ -9,13 +9,15 @@ import streamlit as st
 
 
 def get_audio(prompt_text):
+    tts_model = st.text_input("TTS Model Token here: ")
+
     # FAKEYOU API endpoints
     TTS_REQUEST_URL = "https://api.fakeyou.com/tts/inference"
     TTS_JOB_STATUS_URL = "https://api.fakeyou.com/tts/job/"
     AUDIO_BASE_URL = "https://storage.googleapis.com/vocodes-public"
 
     # Replace with your desired TTS model token and text
-    TTS_MODEL_TOKEN = "TM:fxq6hnfc3rht"
+    TTS_MODEL_TOKEN = tts_model
     TEXT_TO_SPEECH = prompt_text
 
     # Make a TTS request
@@ -78,6 +80,11 @@ def main():
     # Get user input for API Key
     api_key = st.text_input("Enter your OpenAI API Key: ", type="password")
 
+    # Get user input for Online resources
+    youtube_video = st.text_input("Paste Youtube video here: ")
+    web_page = st.text_input("Paste a webpage here: ")
+    pdf_link = st.text_input("Paste PDF url here: ")
+
     if api_key:
         # Set OpenAI API Key
         os.environ["OPENAI_API_KEY"] = api_key
@@ -88,21 +95,11 @@ def main():
             tesla_bot = App()
 
             # Embed Online Resources
-            tesla_bot.add(
-                "youtube_video", "https://www.youtube.com/watch?v=2M9AOzcHVz4"
-            )
-            tesla_bot.add("web_page", "https://en.wikipedia.org/wiki/Nikola_Tesla")
+            tesla_bot.add("youtube_video", youtube_video)
+            tesla_bot.add("web_page", web_page)
+            tesla_bot("pdf_file", pdf_link)
 
-            # Embed Local Resources
-            tesla_bot.add_local(
-                "qna_pair",
-                (
-                    "Who is Nikola Tesla?",
-                    "Nikola Tesla was one of the greatest scientists and innovators.",
-                ),
-            )
-
-            st.title("🤖 Nikola Tesla bot")
+            st.title("🤖⛓️ Your customizable bot")
 
             url1 = "https://github.com/embedchain/embedchain"
             url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
@@ -112,6 +109,8 @@ def main():
 
             # Get user input for the question
             user_query = st.text_input("Enter your question:")
+
+            # Format the prompt
 
             # Submit button
             if st.button("Submit"):
