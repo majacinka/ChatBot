@@ -9,15 +9,13 @@ import streamlit as st
 
 
 def get_audio(prompt_text):
-    tts_model = st.text_input("TTS Model Token here: ")
-
     # FAKEYOU API endpoints
     TTS_REQUEST_URL = "https://api.fakeyou.com/tts/inference"
     TTS_JOB_STATUS_URL = "https://api.fakeyou.com/tts/job/"
     AUDIO_BASE_URL = "https://storage.googleapis.com/vocodes-public"
 
     # Replace with your desired TTS model token and text
-    TTS_MODEL_TOKEN = tts_model
+    TTS_MODEL_TOKEN = "TM:fxq6hnfc3rht"
     TEXT_TO_SPEECH = prompt_text
 
     # Make a TTS request
@@ -80,47 +78,54 @@ def main():
     # Get user input for API Key
     api_key = st.text_input("Enter your OpenAI API Key: ", type="password")
 
-    # Get user input for Online resources
-    youtube_video = st.text_input("Paste Youtube video here: ")
-    web_page = st.text_input("Paste a webpage here: ")
-    pdf_link = st.text_input("Paste PDF url here: ")
+    if api_key:
+        # Set OpenAI API Key
+        os.environ["OPENAI_API_KEY"] = api_key
 
-    # Check if at least one resource is provided
-    any_resource = any([youtube_video, web_page, pdf_link])
+        # Get user input for Online resources
+        youtube_video = st.text_input("Paste Youtube video here: ")
+        web_page = st.text_input("Paste a webpage here: ")
+        pdf_link = st.text_input("Paste PDF url here: ")
 
-    if any_resource:
-        if api_key:
-            # Set OpenAI API Key
-            os.environ["OPENAI_API_KEY"] = api_key
+        # Check if at least one resource is provided
+        any_resource = any([youtube_video, web_page, pdf_link])
+
+        if any_resource:
             try:
-                # Only import App and create an instance if the API key is set
-                from embedchain import App
-
-                tesla_bot = App()
-
-                # Embed Online Resources
-                tesla_bot.add("youtube_video", youtube_video)
-                tesla_bot.add("web_page", web_page)
-                tesla_bot("pdf_file", pdf_link)
-
                 st.title("🤖⛓️ Your customizable bot")
 
                 url1 = "https://github.com/embedchain/embedchain"
                 url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
-                text = f"Nikola Tesla bot knows everything about Nikola Tesla and his amazing achievements ⚡️ The bot is built with multiple youtube, PDF resources as well as Nikola Tesla wikipage 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[Stable Diffusion]({url2})."
+                text = f"Custom Chatbot knows everything about whatever you want it to know ⚡️ You can fine tune it with youtube, PDF and webpages resources 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[Stable Diffusion]({url2})."
 
                 st.markdown(text)
+
+                from embedchain import App
+
+                tesla_bot = App()
+
+                # Create a dictionary with the input resources
+                resources = {
+                    "youtube_video": youtube_video,
+                    "web_page": web_page,
+                    "pdf_file": pdf_link,
+                }
+
+                # Iterate through the dictionary, adding resources that have been provided
+                for resource_type, resource in resources.items():
+                    if resource:  # Check if the resource is not empty
+                        tesla_bot.add(resource_type, resource)
 
                 # Get user input for the question
                 user_query = st.text_input("Enter your question:")
 
                 # Format the prompt
-
+                prompt_template = f'Answer from a first person perspective and always start the sentence with "I" for this question: {user_query}'
                 # Submit button
                 if st.button("Submit"):
                     try:
                         # Query and display the result
-                        result = tesla_bot.query(user_query)
+                        result = tesla_bot.query(prompt_template)
                         st.write(result)
 
                         # Generate the image with DallE
@@ -144,7 +149,7 @@ def main():
                         st.write(f"An error occurred: {e}")
 
             except Exception as e:
-                st.write("Invalid API key")
+                st.write(f"An error occurred: {e}")
         else:
             st.error(
                 "Please provide at least one resource (Youtube video, webpage or PDF link)."
