@@ -85,62 +85,70 @@ def main():
     web_page = st.text_input("Paste a webpage here: ")
     pdf_link = st.text_input("Paste PDF url here: ")
 
-    if api_key:
-        # Set OpenAI API Key
-        os.environ["OPENAI_API_KEY"] = api_key
-        try:
-            # Only import App and create an instance if the API key is set
-            from embedchain import App
+    # Check if at least one resource is provided
+    any_resource = any([youtube_video, web_page, pdf_link])
 
-            tesla_bot = App()
+    if any_resource:
+        if api_key:
+            # Set OpenAI API Key
+            os.environ["OPENAI_API_KEY"] = api_key
+            try:
+                # Only import App and create an instance if the API key is set
+                from embedchain import App
 
-            # Embed Online Resources
-            tesla_bot.add("youtube_video", youtube_video)
-            tesla_bot.add("web_page", web_page)
-            tesla_bot("pdf_file", pdf_link)
+                tesla_bot = App()
 
-            st.title("🤖⛓️ Your customizable bot")
+                # Embed Online Resources
+                tesla_bot.add("youtube_video", youtube_video)
+                tesla_bot.add("web_page", web_page)
+                tesla_bot("pdf_file", pdf_link)
 
-            url1 = "https://github.com/embedchain/embedchain"
-            url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
-            text = f"Nikola Tesla bot knows everything about Nikola Tesla and his amazing achievements ⚡️ The bot is built with multiple youtube, PDF resources as well as Nikola Tesla wikipage 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[Stable Diffusion]({url2})."
+                st.title("🤖⛓️ Your customizable bot")
 
-            st.markdown(text)
+                url1 = "https://github.com/embedchain/embedchain"
+                url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
+                text = f"Nikola Tesla bot knows everything about Nikola Tesla and his amazing achievements ⚡️ The bot is built with multiple youtube, PDF resources as well as Nikola Tesla wikipage 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[Stable Diffusion]({url2})."
 
-            # Get user input for the question
-            user_query = st.text_input("Enter your question:")
+                st.markdown(text)
 
-            # Format the prompt
+                # Get user input for the question
+                user_query = st.text_input("Enter your question:")
 
-            # Submit button
-            if st.button("Submit"):
-                try:
-                    # Query and display the result
-                    result = tesla_bot.query(user_query)
-                    st.write(result)
+                # Format the prompt
 
-                    # Generate the image with DallE
-                    response = openai.Image.create(
-                        prompt=result,  # The text description of the desired image
-                        n=1,  # The number of images to generate
-                        size="1024x1024",  # The size of the generated image
-                    )
+                # Submit button
+                if st.button("Submit"):
+                    try:
+                        # Query and display the result
+                        result = tesla_bot.query(user_query)
+                        st.write(result)
 
-                    # Get the URL of the image from the response
-                    image_url = response["data"][0]["url"]
+                        # Generate the image with DallE
+                        response = openai.Image.create(
+                            prompt=result,  # The text description of the desired image
+                            n=1,  # The number of images to generate
+                            size="1024x1024",  # The size of the generated image
+                        )
 
-                    # Display the image in Streamlit
-                    st.image(image_url)
+                        # Get the URL of the image from the response
+                        image_url = response["data"][0]["url"]
 
-                    audio_player = get_audio(result)
-                    if audio_player is not None:
-                        st.audio(audio_player)
+                        # Display the image in Streamlit
+                        st.image(image_url)
 
-                except Exception as e:
-                    st.write(f"An error occurred: {e}")
+                        audio_player = get_audio(result)
+                        if audio_player is not None:
+                            st.audio(audio_player)
 
-        except Exception as e:
-            st.write("Invalid API key")
+                    except Exception as e:
+                        st.write(f"An error occurred: {e}")
+
+            except Exception as e:
+                st.write("Invalid API key")
+        else:
+            st.error(
+                "Please provide at least one resource (Youtube video, webpage or PDF link)."
+            )
 
 
 if __name__ == "__main__":
