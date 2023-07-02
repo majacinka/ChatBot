@@ -92,7 +92,7 @@ def main():
 
         if any_resource:
             try:
-                st.title("🤖⛓️ Your customizable bot")
+                st.title("🤖⛓️ Talk to your data bot")
 
                 url1 = "https://github.com/embedchain/embedchain"
                 url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
