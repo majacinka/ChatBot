@@ -15,7 +15,7 @@ def get_audio(prompt_text):
     AUDIO_BASE_URL = "https://storage.googleapis.com/vocodes-public"
 
     # Replace with your desired TTS model token and text
-    TTS_MODEL_TOKEN = "TM:fxq6hnfc3rht"
+    TTS_MODEL_TOKEN = "TM:mph385mx1yfr"
     TEXT_TO_SPEECH = prompt_text
 
     # Make a TTS request
@@ -95,8 +95,8 @@ def main():
                 st.title("🤖⛓️ Talk to your data bot")
 
                 url1 = "https://github.com/embedchain/embedchain"
-                url2 = "https://huggingface.co/runwayml/stable-diffusion-v1-5"
-                text = f"Custom Chatbot knows everything about whatever you want it to know ⚡️ You can fine tune it with youtube, PDF and webpages resources 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[Stable Diffusion]({url2})."
+                url2 = "https://openai.com/dall-e-2"
+                text = f"Custom Chatbot knows everything about whatever you want it to know ⚡️ You can fine tune it with youtube, PDF and webpages resources 📚 Built thanks to ⛓️[EmbedChain]({url1}) and 🎆[DalleE]({url2})."
 
                 st.markdown(text)
 
