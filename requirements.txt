@@ -1,6 +1,5 @@
 streamlit
 embedchain
 openai
-requests
 time
 urllib3
