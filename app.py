@@ -15,7 +15,7 @@ def get_audio(prompt_text):
     AUDIO_BASE_URL = "https://storage.googleapis.com/vocodes-public"
 
     # Replace with your desired TTS model token and text
-    TTS_MODEL_TOKEN = "TM:mph385mx1yfr"
+    TTS_MODEL_TOKEN = "TM:1a7mjjxwq4js"
     TEXT_TO_SPEECH = prompt_text
 
     # Make a TTS request
@@ -128,18 +128,18 @@ def main():
                         result = tesla_bot.query(prompt_template)
                         st.write(result)
 
-                        # Generate the image with DallE
-                        response = openai.Image.create(
-                            prompt=result,  # The text description of the desired image
-                            n=1,  # The number of images to generate
-                            size="1024x1024",  # The size of the generated image
-                        )
+                        # # Generate the image with DallE
+                        # response = openai.Image.create(
+                        #     prompt=result,  # The text description of the desired image
+                        #     n=1,  # The number of images to generate
+                        #     size="1024x1024",  # The size of the generated image
+                        # )
 
-                        # Get the URL of the image from the response
-                        image_url = response["data"][0]["url"]
+                        # # Get the URL of the image from the response
+                        # image_url = response["data"][0]["url"]
 
-                        # Display the image in Streamlit
-                        st.image(image_url)
+                        # # Display the image in Streamlit
+                        # st.image(image_url)
 
                         audio_player = get_audio(result)
                         if audio_player is not None:
