@@ -1,0 +1,8 @@
+streamlit
+embedchain
+openai
+requests
+uuid
+os
+time
+urllib3
